@@ -18,6 +18,10 @@ public interface FRConstants {
 	public static final String CHUNK_SIZE_FOR_TTR = "chunk.ttr.size";
 	public static final String OUT_FOLDER_TOKENS = "folder.out.chunks";
 	public static final String STOPWORD_FICTION = "stopword.fiction";
+	public static final String FEATURE_FILE = "file.feature";
+	public static final String ARFF_RESULTS_FILE = "file.results.arff";
+	public static final String STAT_RESULTS_FILE = "file.results.csv";
+
 
 	/* regex */
 	public static final String REGEX_ALL_PUNCTUATION = "[\\s\"\\.\\,\\?\\!\\:\\;\\'-]";

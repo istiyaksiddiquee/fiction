@@ -1,33 +1,24 @@
 package org.ovgu.de.fiction.search;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.SortedMap;
-
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.ovgu.de.fiction.feature.extraction.FeatureExtractorUtility;
 import org.ovgu.de.fiction.model.TopKResults;
 import org.ovgu.de.fiction.utils.FRConstants;
 import org.ovgu.de.fiction.utils.FRGeneralUtils;
-
-import weka.attributeSelection.CfsSubsetEval;
 import weka.attributeSelection.CorrelationAttributeEval;
-import weka.attributeSelection.GreedyStepwise;
 import weka.attributeSelection.InfoGainAttributeEval;
 import weka.attributeSelection.Ranker;
-import weka.classifiers.Evaluation;
-import weka.classifiers.functions.SMO;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.unsupervised.attribute.NumericToNominal;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
 
 
 public class InterpretSearchResults {
@@ -54,13 +45,13 @@ public class InterpretSearchResults {
 	public Map<String,Map<String,String>> performStatiscalAnalysis(TopKResults topKResults) throws Exception {
 		Map<String, Map<String, double[]>> books = topKResults.getBooks();
 		SortedMap<Double, String> results_topK = topKResults.getResults_topK();
-		
-		Map<Integer , TopKResults> searched_result_bins = createBinsModified(books,results_topK); // createBins(books,results_topK);
+
+		Map<Integer, TopKResults> searched_result_bins = createBinsModified(books, results_topK); // createBins(books,results_topK);
 		writeBinsToFiles(searched_result_bins);
-		Map<String,Map<String,String>> stats = getStatistics(FRGeneralUtils.getPropertyVal("file.results.arff"));
+		Map<String, Map<String, String>> stats = getStatistics(FRGeneralUtils.getPropertyVal(FRConstants.ARFF_RESULTS_FILE));
 		//rankFeatures(FRGeneralUtils.getPropertyVal("file.results.arff"));
 		return stats;
-		
+
 	}
 	
 	private Map<String,Map<String,String>> getStatistics(String ARFF_RESULTS_FILE) throws Exception {
@@ -188,25 +179,25 @@ public class InterpretSearchResults {
 	 * @about This method will simply write the instance-feature space to arff files for machine learning
 	 */
 	private void writeBinsToFiles(Map<Integer, TopKResults> searched_result_bins) throws IOException {
-	
+
 		double dummy = 10000.0000;
-		String RESULTS_CSV_FILE = FRGeneralUtils.getPropertyVal("file.results.csv");
-		String RESULTS_ARFF_FILE = FRGeneralUtils.getPropertyVal("file.results.arff");
+		String RESULTS_CSV_FILE = FRGeneralUtils.getPropertyVal(FRConstants.STAT_RESULTS_FILE);
+		String RESULTS_ARFF_FILE = FRGeneralUtils.getPropertyVal(FRConstants.ARFF_RESULTS_FILE);
 		try (FileWriter fileWriter = new FileWriter(RESULTS_CSV_FILE);) {
 
 			fileWriter.append(FRConstants.FILE_HEADER_RES_CSV.toString());
 			fileWriter.append(FRConstants.NEW_LINE);
-			
+
 			for (Map.Entry<Integer, TopKResults> book_features : searched_result_bins.entrySet()) {
 				TopKResults topResults = book_features.getValue();
 				int rank = book_features.getKey();
-				fileWriter.append(topResults.getBookName()+"-"+String.valueOf(rank) + FRConstants.COMMA); //bookID-row_num
+				fileWriter.append(topResults.getBookName() + "-" + String.valueOf(rank) + FRConstants.COMMA); //bookID-row_num
 				double[] book_vector = topResults.getBookGlobalFeatureVector();
-				  for(int k=0;k<book_vector.length;k++){
-					  fileWriter.append(String.format("%.4f", Math.round((book_vector[k])* dummy) / dummy) + FRConstants.COMMA);
-					  }
-				fileWriter.append(String.format("%.4f", Math.round((topResults.getBookClassLabel())* dummy) / dummy) + FRConstants.NEW_LINE);
-				  }
+				for (int k = 0; k < book_vector.length; k++) {
+					fileWriter.append(String.format("%.4f", Math.round((book_vector[k]) * dummy) / dummy) + FRConstants.COMMA);
+				}
+				fileWriter.append(String.format("%.4f", Math.round((topResults.getBookClassLabel()) * dummy) / dummy) + FRConstants.NEW_LINE);
+			}
 			}
 		
 		FeatureExtractorUtility.writeCSVtoARFF(RESULTS_CSV_FILE,RESULTS_ARFF_FILE);
@@ -311,7 +302,7 @@ public class InterpretSearchResults {
 		double stand_Dev =0.0;
 		double mean =0.0;
 		double median=0;
-		
+
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 		for( Map.Entry<Double, String> res: results_topK.entrySet()) {
 	        stats.addValue(res.getKey());
