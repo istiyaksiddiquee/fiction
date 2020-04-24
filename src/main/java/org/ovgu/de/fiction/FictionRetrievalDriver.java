@@ -19,6 +19,7 @@ public class FictionRetrievalDriver {
 
 
     public static void main(String[] args) throws Exception {
+    	System.out.println("Hello!!");
 
         if (args.length != 0) {
             long start = System.currentTimeMillis();
