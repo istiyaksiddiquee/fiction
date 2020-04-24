@@ -64,7 +64,7 @@ public class FRGeneralUtils {
                 || propName.equalsIgnoreCase(FRConstants.ARFF_RESULTS_FILE.toString())
                 || propName.equalsIgnoreCase(FRConstants.STAT_RESULTS_FILE.toString())
         ) {
-            returnValue = LOCATION_OF_BASE_FOLDER + prop.getProperty(propName);
+            returnValue = LOCATION_OF_BASE_FOLDER + FilenameUtils.separatorsToSystem(prop.getProperty(propName));
         }
 
         return returnValue;
