@@ -1,5 +1,6 @@
 package org.ovgu.de.fiction;
 
+import org.apache.log4j.Logger;
 import org.ovgu.de.fiction.feature.extraction.ChunkDetailsGenerator;
 import org.ovgu.de.fiction.model.BookDetails;
 import org.ovgu.de.fiction.model.TopKResults;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public class FictionRetrievalDriver {
 
+    final static Logger LOG = Logger.getLogger(FictionRetrievalDriver.class);
 
     public static void main(String[] args) throws Exception {
 
@@ -65,14 +67,13 @@ public class FictionRetrievalDriver {
 
             //findLuceneRelevantBooks(qryBookNum);
         } else {
-            System.out.printf("Please provide you base folder location as run args");
+            LOG.error("Please provide you base folder location as run args");
         }
     }
 
     public static List<BookDetails> generateOtherFeatureForAll() throws IOException {
         ChunkDetailsGenerator chunkImpl = new ChunkDetailsGenerator();
-        List<BookDetails> books = chunkImpl.getChunksFromAllFiles();
-        return books;
+        return chunkImpl.getChunksFromAllFiles();
     }
 
 
